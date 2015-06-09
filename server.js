@@ -92,6 +92,18 @@ Server.REQUESTS = {
 };
 
 Server.RESPONSES = {
+  // READ_HOLDING_REGISTERS
+  3: function(registers) {
+    if (!Array.isArray(registers) || registers.length != this.request.quantity) {
+      throw new Error('Expected to write an "Array" of length "'+this.request.quantity+'"');
+    }
+    var i=0, l=registers.length, put = Put()
+      .word8(registers.length*2);
+    for (; i<l; i++) {
+      put.word16be(registers[i]);
+    }
+    return put.buffer();
+  },
   // READ_INPUT_REGISTERS
   4: function(registers) {
     if (!Array.isArray(registers) || registers.length != this.request.quantity) {
@@ -103,5 +115,12 @@ Server.RESPONSES = {
       put.word16be(registers[i]);
     }
     return put.buffer();
+  },
+  // WRITE_HOLDING_REGISTER
+  6: function(register) {
+    // Echo back the request address and value as a response
+    return Put()
+      .word16be(this.request.address)
+      .word16be(this.request.value).buffer();
   }
 };
