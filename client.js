@@ -51,9 +51,13 @@ Client.REQUESTS = {
   // READ_INPUT_REGISTERS
   4: putTwoWord16be,
   // WRITE_SINGLE_COIL
-  5: function(address, value) {
-    if (typeof value !== 'boolean') throw new Error('"Write Single Coil" expects a \'boolean\' value');
-    return putTwoWord16be(address, value ? 0xff00 : 0x0000);
+  5: function(outputAddress, outputValue) {
+    if (typeof value !== 'boolean') throw new Error('"Write Single Coil" expects a \'boolean\' output value');
+    return putTwoWord16be(outputAddress, outputValue ? 0xff00 : 0x0000);
+  },
+  // WRITE_SINGLE_REGISTER
+  6: function(registerAddress, registerValue) {
+    return putTwoWord16be(registerAddress, registerValue);
   }
 };
 
